@@ -1,0 +1,12 @@
+CLAUDE.md
+
+# --- Local docs ---
+docs/
+
+.gradle/
+build/
+
+*.iml
+.idea/*
+
+local.properties

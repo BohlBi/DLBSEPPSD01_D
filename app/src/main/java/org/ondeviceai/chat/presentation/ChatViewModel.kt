@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.ondeviceai.chat.domain.ChatService
 import org.ondeviceai.chat.domain.ChatSession
-import org.ondeviceai.chat.infrastructure.ChatImpl
 
 sealed interface ChatIntent {
     data class InputChanged(val text: String) : ChatIntent
@@ -17,20 +16,15 @@ sealed interface ChatIntent {
 }
 
 class ChatViewModel(
-    session: ChatSession = ChatSession(),
-    private val chatService: ChatService = ChatImpl(session),
+    session: ChatSession,
+    private val chatService: ChatService,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            session.messages.collect { messages -> _uiState.update { it.copy(messages = messages) } }
-        }
-        viewModelScope.launch {
-            session.thinking.collect { thinking -> _uiState.update { it.copy(thinking = thinking) } }
-        }
+        collectSession(session)
     }
 
     fun onIntent(intent: ChatIntent) {
@@ -46,5 +40,17 @@ class ChatViewModel(
 
         _uiState.update { it.copy(input = "") }
         chatService.sendMessage(text)
+    }
+
+    private fun collectSession(session: ChatSession) {
+        viewModelScope.launch {
+            session.messages.collect { messages -> _uiState.update { it.copy(messages = messages) } }
+        }
+        viewModelScope.launch {
+            session.thinking.collect { thinking -> _uiState.update { it.copy(thinking = thinking) } }
+        }
+        viewModelScope.launch {
+            session.error.collect { error -> _uiState.update { it.copy(error = error) } }
+        }
     }
 }

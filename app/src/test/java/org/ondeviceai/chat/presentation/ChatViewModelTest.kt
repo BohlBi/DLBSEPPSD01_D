@@ -91,4 +91,13 @@ class ChatViewModelTest {
 
         assertTrue(viewModel.uiState.value.thinking)
     }
+
+    @Test
+    fun `error from the session is shown`() {
+        val viewModel = ChatViewModel(session, chatService)
+
+        session.setError("Modell nicht gefunden")
+
+        assertEquals("Modell nicht gefunden", viewModel.uiState.value.error)
+    }
 }

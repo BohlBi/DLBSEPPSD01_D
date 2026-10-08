@@ -5,5 +5,8 @@
     <string name="nav_models">Modelle</string>
     <string name="nav_settings">Einstellungen</string>
 
+    <string name="chat_input_placeholder">Nachricht</string>
+    <string name="chat_send">Senden</string>
+
     <string name="coming_soon">Coming soon</string>
 </resources>

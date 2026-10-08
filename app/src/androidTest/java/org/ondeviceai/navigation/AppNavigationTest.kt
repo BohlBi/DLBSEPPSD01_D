@@ -60,11 +60,10 @@ class AppNavigationTest {
     }
 
     @Test
-    fun everyScreenShowsComingSoonPlaceholder() {
+    fun placeholderScreensShowComingSoon() {
         setContent()
         val placeholder = hasText(context.getString(R.string.coming_soon))
 
-        composeRule.onNode(placeholder).assertIsDisplayed()
         navItem(R.string.nav_models).performClick()
         composeRule.onNode(placeholder).assertIsDisplayed()
         navItem(R.string.nav_settings).performClick()

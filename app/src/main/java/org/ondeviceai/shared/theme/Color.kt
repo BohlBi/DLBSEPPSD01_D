@@ -1,4 +1,4 @@
-package org.ondeviceai.ui.theme
+package org.ondeviceai.shared.theme
 
 import androidx.compose.ui.graphics.Color
 

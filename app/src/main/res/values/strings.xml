@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">OnDeviceAI</string>
+
+    <string name="nav_chat">Chat</string>
+    <string name="nav_models">Modelle</string>
+    <string name="nav_settings">Einstellungen</string>
+
+    <string name="coming_soon">Coming soon</string>
 </resources>

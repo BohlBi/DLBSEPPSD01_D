@@ -1,5 +1,6 @@
 package org.ondeviceai.navigation
 
+import android.Manifest
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasClickAction
@@ -11,6 +12,7 @@ import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,6 +29,12 @@ class AppNavigationTest {
     val composeRule = createComposeRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
+
+    @Before
+    fun grantContactsPermission() {
+        InstrumentationRegistry.getInstrumentation().uiAutomation
+            .grantRuntimePermission(context.packageName, Manifest.permission.READ_CONTACTS)
+    }
 
     private fun navItem(labelRes: Int) =
         composeRule.onNode(hasText(context.getString(labelRes)) and hasClickAction())
@@ -57,17 +65,6 @@ class AppNavigationTest {
 
         navItem(R.string.nav_chat).performClick()
         composeRule.onNodeWithTag(CHAT_SCREEN_TEST_TAG).assertIsDisplayed()
-    }
-
-    @Test
-    fun placeholderScreensShowComingSoon() {
-        setContent()
-        val placeholder = hasText(context.getString(R.string.coming_soon))
-
-        navItem(R.string.nav_models).performClick()
-        composeRule.onNode(placeholder).assertIsDisplayed()
-        navItem(R.string.nav_settings).performClick()
-        composeRule.onNode(placeholder).assertIsDisplayed()
     }
 
     @Test

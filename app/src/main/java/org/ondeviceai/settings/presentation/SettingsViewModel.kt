@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.ondeviceai.settings.application.SettingsStore
+import org.ondeviceai.settings.domain.SettingsStore
 
 sealed interface SettingsIntent {
     data class SetUseGpu(val useGpu: Boolean) : SettingsIntent

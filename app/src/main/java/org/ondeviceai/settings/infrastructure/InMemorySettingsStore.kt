@@ -3,7 +3,7 @@ package org.ondeviceai.settings.infrastructure
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.ondeviceai.settings.application.SettingsStore
+import org.ondeviceai.settings.domain.SettingsStore
 
 class InMemorySettingsStore : SettingsStore {
 

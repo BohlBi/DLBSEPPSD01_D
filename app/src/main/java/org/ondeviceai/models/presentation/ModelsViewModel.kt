@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.ondeviceai.models.domain.Model
-import org.ondeviceai.models.application.ModelStore
+import org.ondeviceai.models.domain.ModelStore
 import org.ondeviceai.models.domain.ModelService
 
 sealed interface ModelsIntent {

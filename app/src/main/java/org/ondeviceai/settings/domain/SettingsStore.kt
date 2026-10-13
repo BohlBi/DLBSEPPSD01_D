@@ -1,4 +1,4 @@
-package org.ondeviceai.settings.application
+package org.ondeviceai.settings.domain
 
 import kotlinx.coroutines.flow.StateFlow
 

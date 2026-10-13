@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.ondeviceai.models.application.ModelStore
+import org.ondeviceai.models.domain.ModelStore
 import org.ondeviceai.models.domain.MODEL_CATALOG
 import org.ondeviceai.models.domain.Model
 import java.io.File

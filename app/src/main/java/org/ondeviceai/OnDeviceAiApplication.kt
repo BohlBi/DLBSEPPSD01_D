@@ -5,12 +5,12 @@ import okhttp3.OkHttpClient
 import org.ondeviceai.chat.domain.ChatService
 import org.ondeviceai.chat.domain.ChatSession
 import org.ondeviceai.chat.infrastructure.LiteRtChatImpl
-import org.ondeviceai.models.application.ModelStore
+import org.ondeviceai.models.domain.ModelStore
 import org.ondeviceai.models.domain.ModelService
 import org.ondeviceai.models.infrastructure.FileModelStore
 import org.ondeviceai.models.infrastructure.HuggingFaceApi
 import org.ondeviceai.models.infrastructure.RetrofitModelService
-import org.ondeviceai.settings.application.SettingsStore
+import org.ondeviceai.settings.domain.SettingsStore
 import org.ondeviceai.settings.infrastructure.InMemorySettingsStore
 import retrofit2.Retrofit
 

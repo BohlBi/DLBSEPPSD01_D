@@ -26,8 +26,8 @@ import org.ondeviceai.chat.application.tools.EventTool
 import org.ondeviceai.chat.application.tools.ReminderTool
 import org.ondeviceai.chat.application.tools.TimerTool
 import org.ondeviceai.models.domain.Model
-import org.ondeviceai.models.application.ModelStore
-import org.ondeviceai.settings.application.SettingsStore
+import org.ondeviceai.models.domain.ModelStore
+import org.ondeviceai.settings.domain.SettingsStore
 import java.io.File
 import java.time.Clock
 import java.time.LocalDateTime

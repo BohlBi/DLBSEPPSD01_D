@@ -1,7 +1,6 @@
-package org.ondeviceai.models.application
+package org.ondeviceai.models.domain
 
 import kotlinx.coroutines.flow.StateFlow
-import org.ondeviceai.models.domain.Model
 
 interface ModelStore {
     val downloadedModels: StateFlow<List<Model>>

@@ -59,6 +59,6 @@ fun ChatScreen(
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
         }
-        ChatInput(input = uiState.input, onIntent = viewModel::onIntent)
+        ChatInput(input = uiState.input, thinking = uiState.thinking, onIntent = viewModel::onIntent)
     }
 }

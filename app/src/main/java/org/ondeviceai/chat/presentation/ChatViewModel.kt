@@ -15,6 +15,7 @@ import org.ondeviceai.models.api.ModelStore
 sealed interface ChatIntent {
     data class InputChanged(val text: String) : ChatIntent
     data object SendMessage : ChatIntent
+    data object Stop : ChatIntent
     data class SelectModel(val model: Model) : ChatIntent
 }
 
@@ -36,6 +37,7 @@ class ChatViewModel(
         when (intent) {
             is ChatIntent.InputChanged -> _uiState.update { it.copy(input = intent.text) }
             ChatIntent.SendMessage -> sendMessage()
+            ChatIntent.Stop -> chatService.stop()
             is ChatIntent.SelectModel -> modelStore.select(intent.model)
         }
     }

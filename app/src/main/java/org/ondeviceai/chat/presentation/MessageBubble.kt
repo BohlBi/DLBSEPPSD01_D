@@ -15,19 +15,24 @@ import org.ondeviceai.chat.domain.ChatMessage
 
 @Composable
 fun MessageBubble(message: ChatMessage, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxWidth(),
-        contentAlignment = if (message.fromAi) Alignment.CenterEnd else Alignment.CenterStart,
-    ) {
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        ) {
-            Text(
-                text = message.text,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-            )
+    val alignment = if (message.fromAi) Alignment.CenterEnd else Alignment.CenterStart
+
+    Box(modifier = modifier.fillMaxWidth(), contentAlignment = alignment) {
+        Box(modifier = Modifier.fillMaxWidth(0.7f), contentAlignment = alignment) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = if (message.fromAi) {
+                    MaterialTheme.colorScheme.primaryContainer
+                } else {
+                    MaterialTheme.colorScheme.tertiaryContainer
+                },
+            ) {
+                Text(
+                    text = message.text,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                )
+            }
         }
     }
 }

@@ -12,4 +12,6 @@ class ChatImpl(private val session: ChatSession) : ChatService {
         session.addMessage(ChatMessage("hallo", fromAi = true))
         session.setThinking(false)
     }
+
+    override fun stop() {}
 }

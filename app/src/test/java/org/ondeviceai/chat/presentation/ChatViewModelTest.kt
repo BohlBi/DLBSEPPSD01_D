@@ -27,9 +27,14 @@ class ChatViewModelTest {
     private val session = ChatSession()
     private val modelStore by lazy { ModelStore(modelDir.root) }
     private val sentMessages = mutableListOf<String>()
+    private var stopCount = 0
     private val chatService = object : ChatService {
         override fun sendMessage(message: String) {
             sentMessages += message
+        }
+
+        override fun stop() {
+            stopCount++
         }
     }
 
@@ -131,5 +136,14 @@ class ChatViewModelTest {
 
         assertEquals(second, modelStore.selectedModel.value)
         assertEquals(second, viewModel.uiState.value.selectedModel)
+    }
+
+    @Test
+    fun `Stop stops the service`() {
+        val viewModel = ChatViewModel(session, chatService, modelStore)
+
+        viewModel.onIntent(ChatIntent.Stop)
+
+        assertEquals(1, stopCount)
     }
 }

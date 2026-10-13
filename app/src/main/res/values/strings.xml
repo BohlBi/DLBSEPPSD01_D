@@ -7,6 +7,7 @@
 
     <string name="chat_input_placeholder">Nachricht</string>
     <string name="chat_send">Senden</string>
+    <string name="chat_stop">Stoppen</string>
 
     <string name="chat_model">Modell</string>
 

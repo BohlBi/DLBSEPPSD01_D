@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -19,6 +20,7 @@ import org.ondeviceai.R
 @Composable
 fun ChatInput(
     input: String,
+    thinking: Boolean,
     onIntent: (ChatIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -34,11 +36,17 @@ fun ChatInput(
             placeholder = { Text(stringResource(R.string.chat_input_placeholder)) },
             modifier = Modifier.weight(1f),
         )
-        IconButton(
-            onClick = { onIntent(ChatIntent.SendMessage) },
-            enabled = input.isNotBlank(),
-        ) {
-            Icon(Icons.AutoMirrored.Filled.Send, contentDescription = stringResource(R.string.chat_send))
+        if (thinking) {
+            IconButton(onClick = { onIntent(ChatIntent.Stop) }) {
+                Icon(Icons.Filled.Stop, contentDescription = stringResource(R.string.chat_stop))
+            }
+        } else {
+            IconButton(
+                onClick = { onIntent(ChatIntent.SendMessage) },
+                enabled = input.isNotBlank(),
+            ) {
+                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = stringResource(R.string.chat_send))
+            }
         }
     }
 }

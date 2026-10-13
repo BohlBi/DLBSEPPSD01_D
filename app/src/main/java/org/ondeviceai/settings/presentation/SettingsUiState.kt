@@ -1,5 +1,5 @@
 package org.ondeviceai.settings.presentation
 
-sealed interface SettingsUiState {
-    data object ComingSoon : SettingsUiState
-}
+data class SettingsUiState(
+    val useGpu: Boolean = false,
+)

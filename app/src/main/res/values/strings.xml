@@ -14,5 +14,8 @@
     <string name="models_download">Herunterladen</string>
     <string name="models_downloaded">Heruntergeladen</string>
 
+    <string name="settings_use_gpu">GPU verwenden</string>
+    <string name="settings_use_gpu_description">Schneller, auf manchen Geräten aber fehlerhafte Ausgaben. Wird beim nächsten Senden übernommen.</string>
+
     <string name="coming_soon">Coming soon</string>
 </resources>

@@ -15,11 +15,13 @@ import org.ondeviceai.chat.domain.ChatService
 import org.ondeviceai.chat.domain.ChatSession
 import org.ondeviceai.models.api.Model
 import org.ondeviceai.models.api.ModelStore
+import org.ondeviceai.settings.domain.SettingsStore
 import java.util.concurrent.atomic.AtomicInteger
 
 class LiteRtChatImpl(
     private val session: ChatSession,
     private val modelStore: ModelStore,
+    private val settingsStore: SettingsStore,
 ) : ChatService {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default.limitedParallelism(1))
@@ -27,6 +29,7 @@ class LiteRtChatImpl(
     @Volatile private var conversation: Conversation? = null
     @Volatile private var cancelled = false
     private var loadedModel: Model? = null
+    private var loadedWithGpu: Boolean? = null
     private val currentRequest = AtomicInteger()
 
     override fun sendMessage(message: String) {
@@ -61,7 +64,8 @@ class LiteRtChatImpl(
     }
 
     private fun conversation(model: Model): Conversation {
-        if (model != loadedModel) loadEngine(model)
+        val useGpu = settingsStore.useGpu.value
+        if (model != loadedModel || useGpu != loadedWithGpu) loadEngine(model, useGpu)
 
         val current = conversation
         if (current != null && current.isAlive && !cancelled) return current
@@ -73,16 +77,19 @@ class LiteRtChatImpl(
             .also { conversation = it }
     }
 
-    private fun loadEngine(model: Model) {
+    private fun loadEngine(model: Model, useGpu: Boolean) {
         conversation?.takeIf { it.isAlive }?.close()
         engine?.close()
         conversation = null
         engine = null
         loadedModel = null
+        loadedWithGpu = null
 
-        val newEngine = Engine(EngineConfig(modelPath = modelStore.pathOf(model), backend = Backend.GPU()))
+        val backend = if (useGpu) Backend.GPU() else Backend.CPU()
+        val newEngine = Engine(EngineConfig(modelPath = modelStore.pathOf(model), backend = backend))
         newEngine.initialize()
         engine = newEngine
         loadedModel = model
+        loadedWithGpu = useGpu
     }
 }

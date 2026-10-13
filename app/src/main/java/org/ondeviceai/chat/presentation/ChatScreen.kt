@@ -29,7 +29,7 @@ fun ChatScreen(
     viewModel: ChatViewModel = (LocalContext.current.applicationContext as OnDeviceAiApplication).let { app ->
         viewModel {
             val session = ChatSession()
-            ChatViewModel(session, LiteRtChatImpl(session, app.modelStore), app.modelStore)
+            ChatViewModel(session, LiteRtChatImpl(session, app.modelStore, app.settingsStore), app.modelStore)
         }
     },
 ) {

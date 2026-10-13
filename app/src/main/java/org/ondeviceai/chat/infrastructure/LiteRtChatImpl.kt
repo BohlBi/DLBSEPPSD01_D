@@ -114,7 +114,7 @@ class LiteRtChatImpl(
             systemInstruction = Contents.of(SYSTEM_PROMPT),
             tools = listOf(
                 tool(AlarmTool(context, Clock.systemDefaultZone())),
-                tool(TimerTool()),
+                tool(TimerTool(context)),
                 tool(ReminderTool()),
                 tool(EventTool()),
                 tool(CallTool()),

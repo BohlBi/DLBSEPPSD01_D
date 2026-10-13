@@ -7,7 +7,7 @@ import org.ondeviceai.settings.domain.SettingsStore
 
 class InMemorySettingsStore : SettingsStore {
 
-    private val _useGpu = MutableStateFlow(false)
+    private val _useGpu = MutableStateFlow(true)
     override val useGpu: StateFlow<Boolean> = _useGpu.asStateFlow()
 
     override fun setUseGpu(useGpu: Boolean) {

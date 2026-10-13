@@ -29,29 +29,29 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `initial state uses CPU`() {
+    fun `initial state uses GPU`() {
         val viewModel = SettingsViewModel(store)
 
-        assertEquals(SettingsUiState(useGpu = false), viewModel.uiState.value)
+        assertEquals(SettingsUiState(useGpu = true), viewModel.uiState.value)
     }
 
     @Test
     fun `SetUseGpu updates the store and the state`() {
         val viewModel = SettingsViewModel(store)
 
-        viewModel.onIntent(SettingsIntent.SetUseGpu(true))
+        viewModel.onIntent(SettingsIntent.SetUseGpu(false))
 
-        assertTrue(store.useGpu.value)
-        assertTrue(viewModel.uiState.value.useGpu)
+        assertFalse(store.useGpu.value)
+        assertFalse(viewModel.uiState.value.useGpu)
     }
 
     @Test
     fun `changes in the store are shown`() {
         val viewModel = SettingsViewModel(store)
-        store.setUseGpu(true)
-
         store.setUseGpu(false)
 
-        assertFalse(viewModel.uiState.value.useGpu)
+        store.setUseGpu(true)
+
+        assertTrue(viewModel.uiState.value.useGpu)
     }
 }

@@ -21,6 +21,7 @@ import org.ondeviceai.chat.domain.ChatSession
 import org.ondeviceai.models.api.Model
 import org.ondeviceai.models.api.ModelStore
 import org.ondeviceai.settings.domain.SettingsStore
+import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -32,6 +33,7 @@ class LiteRtChatImpl(
     private val session: ChatSession,
     private val modelStore: ModelStore,
     private val settingsStore: SettingsStore,
+    private val cacheDir: File,
 ) : ChatService {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default.limitedParallelism(1))
@@ -119,7 +121,7 @@ class LiteRtChatImpl(
 
         val backend = if (useGpu) Backend.GPU() else Backend.CPU()
         ExperimentalFlags.enableSpeculativeDecoding = useGpu
-        val newEngine = Engine(EngineConfig(modelPath = modelStore.pathOf(model), backend = backend))
+        val newEngine = Engine(EngineConfig(modelPath = modelStore.pathOf(model), backend = backend, cacheDir = cacheDir.path))
         newEngine.initialize()
         engine = newEngine
         loadedModel = model

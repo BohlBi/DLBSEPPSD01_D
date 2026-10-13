@@ -9,15 +9,19 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.ondeviceai.chat.domain.ChatService
 import org.ondeviceai.chat.domain.ChatSession
+import org.ondeviceai.models.api.Model
+import org.ondeviceai.models.api.ModelStore
 
 sealed interface ChatIntent {
     data class InputChanged(val text: String) : ChatIntent
     data object SendMessage : ChatIntent
+    data class SelectModel(val model: Model) : ChatIntent
 }
 
 class ChatViewModel(
     session: ChatSession,
     private val chatService: ChatService,
+    private val modelStore: ModelStore,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChatUiState())
@@ -25,12 +29,14 @@ class ChatViewModel(
 
     init {
         collectSession(session)
+        collectModels()
     }
 
     fun onIntent(intent: ChatIntent) {
         when (intent) {
             is ChatIntent.InputChanged -> _uiState.update { it.copy(input = intent.text) }
             ChatIntent.SendMessage -> sendMessage()
+            is ChatIntent.SelectModel -> modelStore.select(intent.model)
         }
     }
 
@@ -51,6 +57,15 @@ class ChatViewModel(
         }
         viewModelScope.launch {
             session.error.collect { error -> _uiState.update { it.copy(error = error) } }
+        }
+    }
+
+    private fun collectModels() {
+        viewModelScope.launch {
+            modelStore.downloadedModels.collect { models -> _uiState.update { it.copy(models = models) } }
+        }
+        viewModelScope.launch {
+            modelStore.selectedModel.collect { model -> _uiState.update { it.copy(selectedModel = model) } }
         }
     }
 }

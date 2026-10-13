@@ -8,5 +8,10 @@
     <string name="chat_input_placeholder">Nachricht</string>
     <string name="chat_send">Senden</string>
 
+    <string name="chat_model">Modell</string>
+
+    <string name="models_download">Herunterladen</string>
+    <string name="models_downloaded">Heruntergeladen</string>
+
     <string name="coming_soon">Coming soon</string>
 </resources>

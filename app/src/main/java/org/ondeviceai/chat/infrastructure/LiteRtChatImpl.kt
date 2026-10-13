@@ -1,6 +1,5 @@
 package org.ondeviceai.chat.infrastructure
 
-import android.content.Context
 import com.google.ai.edge.litertlm.Backend
 import com.google.ai.edge.litertlm.Conversation
 import com.google.ai.edge.litertlm.Engine
@@ -12,17 +11,18 @@ import kotlinx.coroutines.launch
 import org.ondeviceai.chat.domain.ChatMessage
 import org.ondeviceai.chat.domain.ChatService
 import org.ondeviceai.chat.domain.ChatSession
+import org.ondeviceai.models.api.Model
+import org.ondeviceai.models.api.ModelStore
 
 class LiteRtChatImpl(
     private val session: ChatSession,
-    context: Context,
+    private val modelStore: ModelStore,
 ) : ChatService {
 
-    // just one hardcoed model for now
-    private val modelPath = "${context.filesDir.path}/$MODEL_FILE"
-
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default.limitedParallelism(1))
+    private var engine: Engine? = null
     private var conversation: Conversation? = null
+    private var loadedModel: Model? = null
 
     override fun sendMessage(message: String) {
         session.addMessage(ChatMessage(message, fromAi = false))
@@ -30,7 +30,8 @@ class LiteRtChatImpl(
         session.setThinking(true)
         scope.launch {
             try {
-                val reply = conversation().sendMessage(message).toString()
+                val model = modelStore.selectedModel.value ?: error("Kein Modell heruntergeladen")
+                val reply = conversation(model).sendMessage(message).toString()
                 session.addMessage(ChatMessage(reply, fromAi = true))
             } catch (e: Exception) {
                 session.setError(e.message ?: e.javaClass.simpleName)
@@ -40,13 +41,22 @@ class LiteRtChatImpl(
         }
     }
 
-    private fun conversation(): Conversation =
-        conversation ?: Engine(EngineConfig(modelPath = modelPath, backend = Backend.GPU()))
-            .apply { initialize() }
-            .createConversation()
-            .also { conversation = it }
+    private fun conversation(model: Model): Conversation {
+        val current = conversation
+        if (current != null && model == loadedModel) return current
 
-    private companion object {
-        const val MODEL_FILE = "gemma-4-E2B-it.litertlm"
+        conversation?.close()
+        engine?.close()
+        conversation = null
+        engine = null
+        loadedModel = null
+
+        val newEngine = Engine(EngineConfig(modelPath = modelStore.pathOf(model), backend = Backend.GPU()))
+        engine = newEngine
+        newEngine.initialize()
+        return newEngine.createConversation().also {
+            conversation = it
+            loadedModel = model
+        }
     }
 }

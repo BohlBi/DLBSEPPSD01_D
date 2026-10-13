@@ -18,8 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ondeviceai.OnDeviceAiApplication
-import org.ondeviceai.chat.domain.ChatSession
-import org.ondeviceai.chat.infrastructure.LiteRtChatImpl
 
 const val CHAT_SCREEN_TEST_TAG = "chat_screen"
 
@@ -27,10 +25,7 @@ const val CHAT_SCREEN_TEST_TAG = "chat_screen"
 fun ChatScreen(
     modifier: Modifier = Modifier,
     viewModel: ChatViewModel = (LocalContext.current.applicationContext as OnDeviceAiApplication).let { app ->
-        viewModel {
-            val session = ChatSession()
-            ChatViewModel(session, LiteRtChatImpl(session, app.modelStore, app.settingsStore, app.cacheDir), app.modelStore)
-        }
+        viewModel { ChatViewModel(app.chatSession, app.chatService, app.modelStore) }
     },
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

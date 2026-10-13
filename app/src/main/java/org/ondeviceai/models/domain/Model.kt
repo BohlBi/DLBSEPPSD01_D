@@ -1,4 +1,4 @@
-package org.ondeviceai.models.api
+package org.ondeviceai.models.domain
 
 data class Model(
     val name: String,

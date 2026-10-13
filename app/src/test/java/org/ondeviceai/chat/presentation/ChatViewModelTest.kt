@@ -15,7 +15,7 @@ import org.junit.rules.TemporaryFolder
 import org.ondeviceai.chat.domain.ChatMessage
 import org.ondeviceai.chat.domain.ChatService
 import org.ondeviceai.chat.domain.ChatSession
-import org.ondeviceai.models.api.ModelStore
+import org.ondeviceai.models.infrastructure.FileModelStore
 import org.ondeviceai.models.domain.MODEL_CATALOG
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -25,7 +25,7 @@ class ChatViewModelTest {
     val modelDir = TemporaryFolder()
 
     private val session = ChatSession()
-    private val modelStore by lazy { ModelStore(modelDir.root) }
+    private val modelStore by lazy { FileModelStore(modelDir.root) }
     private val sentMessages = mutableListOf<String>()
     private var stopCount = 0
     private val chatService = object : ChatService {

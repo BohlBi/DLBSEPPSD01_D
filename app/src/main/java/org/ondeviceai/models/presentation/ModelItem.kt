@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.ondeviceai.R
-import org.ondeviceai.models.api.Model
+import org.ondeviceai.models.domain.Model
 
 @Composable
 fun ModelItem(

@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.ondeviceai.chat.domain.ChatService
 import org.ondeviceai.chat.domain.ChatSession
-import org.ondeviceai.models.api.Model
-import org.ondeviceai.models.api.ModelStore
+import org.ondeviceai.models.domain.Model
+import org.ondeviceai.models.application.ModelStore
 
 sealed interface ChatIntent {
     data class InputChanged(val text: String) : ChatIntent

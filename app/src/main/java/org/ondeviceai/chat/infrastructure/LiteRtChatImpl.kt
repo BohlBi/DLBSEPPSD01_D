@@ -1,5 +1,6 @@
 package org.ondeviceai.chat.infrastructure
 
+import android.content.Context
 import android.util.Log
 import com.google.ai.edge.litertlm.Backend
 import com.google.ai.edge.litertlm.Contents
@@ -18,10 +19,17 @@ import kotlinx.coroutines.launch
 import org.ondeviceai.chat.domain.ChatMessage
 import org.ondeviceai.chat.domain.ChatService
 import org.ondeviceai.chat.domain.ChatSession
-import org.ondeviceai.models.api.Model
-import org.ondeviceai.models.api.ModelStore
-import org.ondeviceai.settings.domain.SettingsStore
+import org.ondeviceai.chat.application.SYSTEM_PROMPT
+import org.ondeviceai.chat.application.tools.AlarmTool
+import org.ondeviceai.chat.application.tools.CallTool
+import org.ondeviceai.chat.application.tools.EventTool
+import org.ondeviceai.chat.application.tools.ReminderTool
+import org.ondeviceai.chat.application.tools.TimerTool
+import org.ondeviceai.models.domain.Model
+import org.ondeviceai.models.application.ModelStore
+import org.ondeviceai.settings.application.SettingsStore
 import java.io.File
+import java.time.Clock
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -34,6 +42,7 @@ class LiteRtChatImpl(
     private val modelStore: ModelStore,
     private val settingsStore: SettingsStore,
     private val cacheDir: File,
+    private val context: Context,
 ) : ChatService {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default.limitedParallelism(1))
@@ -103,7 +112,13 @@ class LiteRtChatImpl(
         val engine = checkNotNull(engine)
         val config = ConversationConfig(
             systemInstruction = Contents.of(SYSTEM_PROMPT),
-            tools = listOf(tool(ActionTools())),
+            tools = listOf(
+                tool(AlarmTool(context, Clock.systemDefaultZone())),
+                tool(TimerTool()),
+                tool(ReminderTool()),
+                tool(EventTool()),
+                tool(CallTool()),
+            ),
                         thinkingConfig = ThinkingConfig(enableThinking = false),
         )
         return engine.createConversation(config)

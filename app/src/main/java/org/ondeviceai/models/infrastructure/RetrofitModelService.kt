@@ -4,8 +4,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import org.ondeviceai.models.api.Model
-import org.ondeviceai.models.api.ModelStore
+import org.ondeviceai.models.domain.Model
+import org.ondeviceai.models.application.ModelStore
 import org.ondeviceai.models.domain.ModelService
 import java.io.File
 

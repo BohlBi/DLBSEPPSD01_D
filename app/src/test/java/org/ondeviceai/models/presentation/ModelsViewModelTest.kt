@@ -11,8 +11,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.ondeviceai.models.api.Model
-import org.ondeviceai.models.api.ModelStore
+import org.ondeviceai.models.domain.Model
+import org.ondeviceai.models.infrastructure.FileModelStore
 import org.ondeviceai.models.domain.MODEL_CATALOG
 import org.ondeviceai.models.domain.ModelService
 
@@ -41,7 +41,7 @@ class ModelsViewModelTest {
 
     @Test
     fun `initial state shows the catalog without downloads`() {
-        val viewModel = ModelsViewModel(ModelStore(modelDir.root), modelService)
+        val viewModel = ModelsViewModel(FileModelStore(modelDir.root), modelService)
 
         assertEquals(ModelsUiState(models = MODEL_CATALOG), viewModel.uiState.value)
     }
@@ -51,14 +51,14 @@ class ModelsViewModelTest {
         val model = MODEL_CATALOG.first()
         modelDir.newFile(model.fileName)
 
-        val viewModel = ModelsViewModel(ModelStore(modelDir.root), modelService)
+        val viewModel = ModelsViewModel(FileModelStore(modelDir.root), modelService)
 
         assertEquals(listOf(model), viewModel.uiState.value.downloaded)
     }
 
     @Test
     fun `Download passes the model to the service`() {
-        val viewModel = ModelsViewModel(ModelStore(modelDir.root), modelService)
+        val viewModel = ModelsViewModel(FileModelStore(modelDir.root), modelService)
         val model = MODEL_CATALOG.last()
 
         viewModel.onIntent(ModelsIntent.Download(model))
@@ -68,7 +68,7 @@ class ModelsViewModelTest {
 
     @Test
     fun `progress and error from the store are shown`() {
-        val store = ModelStore(modelDir.root)
+        val store = FileModelStore(modelDir.root)
         val viewModel = ModelsViewModel(store, modelService)
         val model = MODEL_CATALOG.first()
 
@@ -81,7 +81,7 @@ class ModelsViewModelTest {
 
     @Test
     fun `finished download appears as downloaded`() {
-        val store = ModelStore(modelDir.root)
+        val store = FileModelStore(modelDir.root)
         val viewModel = ModelsViewModel(store, modelService)
         val model = MODEL_CATALOG.first()
 

@@ -1,7 +1,7 @@
 package org.ondeviceai.chat.presentation
 
 import org.ondeviceai.chat.domain.ChatMessage
-import org.ondeviceai.models.api.Model
+import org.ondeviceai.models.domain.Model
 
 data class ChatUiState(
     val messages: List<ChatMessage> = emptyList(),

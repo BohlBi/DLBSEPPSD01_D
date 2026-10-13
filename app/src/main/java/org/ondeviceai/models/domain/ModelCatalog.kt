@@ -1,6 +1,5 @@
 package org.ondeviceai.models.domain
 
-import org.ondeviceai.models.api.Model
 
 val MODEL_CATALOG = listOf(
     huggingFaceModel("Gemma 4 E2B", "litert-community/gemma-4-E2B-it-litert-lm", "gemma-4-E2B-it.litertlm", 2_588_147_712),

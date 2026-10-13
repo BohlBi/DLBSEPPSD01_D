@@ -25,6 +25,7 @@ class LiteRtChatImpl(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default.limitedParallelism(1))
     private var engine: Engine? = null
     @Volatile private var conversation: Conversation? = null
+    @Volatile private var cancelled = false
     private var loadedModel: Model? = null
     private val currentRequest = AtomicInteger()
 
@@ -50,6 +51,7 @@ class LiteRtChatImpl(
 
     override fun stop() {
         currentRequest.incrementAndGet()
+        cancelled = true
         try {
             conversation?.takeIf { it.isAlive }?.cancelProcess()
         } catch (e: Exception) {
@@ -59,9 +61,19 @@ class LiteRtChatImpl(
     }
 
     private fun conversation(model: Model): Conversation {
-        val current = conversation
-        if (current != null && current.isAlive && model == loadedModel) return current
+        if (model != loadedModel) loadEngine(model)
 
+        val current = conversation
+        if (current != null && current.isAlive && !cancelled) return current
+
+        current?.takeIf { it.isAlive }?.close()
+        cancelled = false
+        val engine = checkNotNull(engine)
+        return engine.createConversation(ConversationConfig(thinkingConfig = ThinkingConfig(enableThinking = false)))
+            .also { conversation = it }
+    }
+
+    private fun loadEngine(model: Model) {
         conversation?.takeIf { it.isAlive }?.close()
         engine?.close()
         conversation = null
@@ -69,11 +81,8 @@ class LiteRtChatImpl(
         loadedModel = null
 
         val newEngine = Engine(EngineConfig(modelPath = modelStore.pathOf(model), backend = Backend.GPU()))
-        engine = newEngine
         newEngine.initialize()
-        return newEngine.createConversation(ConversationConfig(thinkingConfig = ThinkingConfig(enableThinking = false))).also {
-            conversation = it
-            loadedModel = model
-        }
+        engine = newEngine
+        loadedModel = model
     }
 }

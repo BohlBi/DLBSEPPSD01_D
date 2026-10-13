@@ -1,8 +1,14 @@
 package org.ondeviceai.navigation
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -15,12 +21,19 @@ import org.ondeviceai.chat.presentation.ChatScreen
 import org.ondeviceai.models.presentation.ModelsScreen
 import org.ondeviceai.settings.presentation.SettingsScreen
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier) {
     val backStack = rememberNavBackStack(ChatRoute)
+    val layoutType = if (WindowInsets.isImeVisible) {
+        NavigationSuiteType.None
+    } else {
+        NavigationSuiteScaffoldDefaults.navigationSuiteType(currentWindowAdaptiveInfoV2())
+    }
 
     NavigationSuiteScaffold(
         modifier = modifier,
+        layoutType = layoutType,
         navigationSuiteItems = {
             TopLevelDestination.entries.forEach { destination ->
                 item(

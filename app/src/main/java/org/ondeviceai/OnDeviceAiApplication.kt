@@ -14,6 +14,7 @@ import org.ondeviceai.settings.domain.SettingsStore
 import org.ondeviceai.settings.infrastructure.InMemorySettingsStore
 import retrofit2.Retrofit
 
+/** Composition Root: erzeugt die gemeinsamen Instanzen, die Screens nur abholen. */
 class OnDeviceAiApplication : Application() {
 
     val modelStore: ModelStore by lazy { FileModelStore(filesDir) }

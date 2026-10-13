@@ -1,5 +1,6 @@
 package org.ondeviceai.chat.application
 
+/** System-Prompt für das Modell, versioniert in `docs/prompts/`. */
 const val SYSTEM_PROMPT = "Du bist ein Assistent auf einem Android-Smartphone. " +
     "Wenn der Nutzer einen Wecker, einen Timer, einen Kalendereintrag oder einen Anruf möchte, " +
     "rufe das passende Tool auf. Jede Nachricht beginnt mit dem aktuellen Zeitpunkt; " +

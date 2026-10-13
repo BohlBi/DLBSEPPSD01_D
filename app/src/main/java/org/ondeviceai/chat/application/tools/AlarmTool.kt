@@ -12,6 +12,11 @@ import java.time.LocalDateTime
 
 private const val TAG = "AlarmTool"
 
+/**
+ * Tool `set_alarm`: stellt über die Uhr-App des Systems einen Wecker.
+ * Der Intent kennt nur die Uhrzeit, daher sind nur Zeitpunkte in den nächsten 24 Stunden erlaubt.
+ * Die Rückgabe geht als Tool-Response an das Modell.
+ */
 class AlarmTool(private val context: Context, private val clock: Clock) : ToolSet {
 
     @Tool(description = "Stellt einen Wecker.")

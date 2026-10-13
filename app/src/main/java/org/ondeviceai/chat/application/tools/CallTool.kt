@@ -13,6 +13,11 @@ import com.google.ai.edge.litertlm.ToolSet
 
 private const val TAG = "CallTool"
 
+/**
+ * Tool `call_contact`: sucht den Namen in den Kontakten (`READ_CONTACTS`) und öffnet bei genau einem
+ * Treffer die Telefon-App mit der Nummer. Bei mehreren Treffern erhält das Modell die Namen,
+ * um nachzufragen.
+ */
 class CallTool(private val context: Context) : ToolSet {
 
     @Tool(description = "Ruft einen Kontakt an.")

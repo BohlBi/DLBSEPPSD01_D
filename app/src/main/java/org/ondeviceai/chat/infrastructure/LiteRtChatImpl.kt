@@ -36,6 +36,14 @@ import java.util.concurrent.atomic.AtomicInteger
 
 private const val TAG = "LiteRtChatImpl"
 
+/**
+ * [ChatService] auf Basis von LiteRT-LM.
+ *
+ * Lädt die Engine beim ersten Senden sowie nach einem Modell- oder Backend-Wechsel neu, stellt jeder
+ * Nachricht den aktuellen Zeitpunkt voran und streamt die Antwort in die [ChatSession]. Tool-Aufrufe
+ * führt LiteRT-LM automatisch über die Tools aus `chat/application/tools` aus. Ergebnisse abgebrochener
+ * Anfragen werden über einen Anfragezähler verworfen.
+ */
 class LiteRtChatImpl(
     private val session: ChatSession,
     private val modelStore: ModelStore,

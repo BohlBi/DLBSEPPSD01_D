@@ -9,6 +9,10 @@ import org.ondeviceai.models.domain.ModelStore
 import org.ondeviceai.models.domain.ModelService
 import java.io.File
 
+/**
+ * [ModelService] über Retrofit/OkHttp. Lädt in eine `.part`-Datei und benennt sie erst nach
+ * vollständigem Download um, damit abgebrochene Downloads nicht als heruntergeladen gelten.
+ */
 class RetrofitModelService(
     private val store: ModelStore,
     private val api: HuggingFaceApi,

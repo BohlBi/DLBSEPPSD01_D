@@ -9,6 +9,7 @@ import org.ondeviceai.models.domain.MODEL_CATALOG
 import org.ondeviceai.models.domain.Model
 import java.io.File
 
+/** [ModelStore], der heruntergeladene Modelle anhand vorhandener Dateien in [modelDir] erkennt. */
 class FileModelStore(private val modelDir: File) : ModelStore {
 
     private val _downloadedModels = MutableStateFlow(MODEL_CATALOG.filter { File(modelDir, it.fileName).exists() })

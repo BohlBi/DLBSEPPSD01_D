@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+/** Gemeinsamer Zustand des Chats; [ChatService] schreibt hinein, das ViewModel abonniert ihn. */
 class ChatSession {
 
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
@@ -20,6 +21,7 @@ class ChatSession {
         _messages.update { it + message }
     }
 
+    /** Ersetzt die letzte Nachricht, z. B. um eine gestreamte Antwort fortzuschreiben. */
     fun updateLastMessage(message: ChatMessage) {
         _messages.update { it.dropLast(1) + message }
     }

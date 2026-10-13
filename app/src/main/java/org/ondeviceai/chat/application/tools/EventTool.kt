@@ -11,6 +11,10 @@ import java.time.ZoneId
 
 private const val TAG = "EventTool"
 
+/**
+ * Tool `create_event`: öffnet die Kalender-App mit vorausgefülltem Termin; gespeichert wird erst durch
+ * den Nutzer. Die Rückgabe geht als Tool-Response an das Modell.
+ */
 class EventTool(private val context: Context) : ToolSet {
 
     @Tool(description = "Erstellt einen Kalendereintrag.")

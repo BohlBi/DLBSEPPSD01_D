@@ -11,6 +11,10 @@ import com.google.ai.edge.litertlm.ToolSet
 private const val TAG = "TimerTool"
 private const val MAX_SECONDS = 86_400
 
+/**
+ * Tool `set_timer`: startet über die Uhr-App des Systems einen Timer von 1 bis 86 400 Sekunden.
+ * Die Rückgabe geht als Tool-Response an das Modell.
+ */
 class TimerTool(private val context: Context) : ToolSet {
 
     @Tool(description = "Startet einen Timer.")

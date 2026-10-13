@@ -23,7 +23,6 @@ import org.ondeviceai.chat.application.SYSTEM_PROMPT
 import org.ondeviceai.chat.application.tools.AlarmTool
 import org.ondeviceai.chat.application.tools.CallTool
 import org.ondeviceai.chat.application.tools.EventTool
-import org.ondeviceai.chat.application.tools.ReminderTool
 import org.ondeviceai.chat.application.tools.TimerTool
 import org.ondeviceai.models.domain.Model
 import org.ondeviceai.models.domain.ModelStore
@@ -115,9 +114,8 @@ class LiteRtChatImpl(
             tools = listOf(
                 tool(AlarmTool(context, Clock.systemDefaultZone())),
                 tool(TimerTool(context)),
-                tool(ReminderTool()),
-                tool(EventTool()),
-                tool(CallTool()),
+                tool(EventTool(context)),
+                tool(CallTool(context)),
             ),
                         thinkingConfig = ThinkingConfig(enableThinking = false),
         )

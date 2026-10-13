@@ -20,6 +20,10 @@ class ChatSession {
         _messages.update { it + message }
     }
 
+    fun updateLastMessage(message: ChatMessage) {
+        _messages.update { it.dropLast(1) + message }
+    }
+
     fun setThinking(thinking: Boolean) {
         _thinking.value = thinking
     }

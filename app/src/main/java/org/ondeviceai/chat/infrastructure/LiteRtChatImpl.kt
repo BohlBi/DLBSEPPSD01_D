@@ -1,11 +1,16 @@
 package org.ondeviceai.chat.infrastructure
 
+import android.util.Log
 import com.google.ai.edge.litertlm.Backend
+import com.google.ai.edge.litertlm.Contents
 import com.google.ai.edge.litertlm.Conversation
 import com.google.ai.edge.litertlm.ConversationConfig
 import com.google.ai.edge.litertlm.Engine
 import com.google.ai.edge.litertlm.EngineConfig
+import com.google.ai.edge.litertlm.ExperimentalApi
+import com.google.ai.edge.litertlm.ExperimentalFlags
 import com.google.ai.edge.litertlm.ThinkingConfig
+import com.google.ai.edge.litertlm.tool
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -16,7 +21,12 @@ import org.ondeviceai.chat.domain.ChatSession
 import org.ondeviceai.models.api.Model
 import org.ondeviceai.models.api.ModelStore
 import org.ondeviceai.settings.domain.SettingsStore
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import java.util.concurrent.atomic.AtomicInteger
+
+private const val TAG = "LiteRtChatImpl"
 
 class LiteRtChatImpl(
     private val session: ChatSession,
@@ -31,6 +41,7 @@ class LiteRtChatImpl(
     private var loadedModel: Model? = null
     private var loadedWithGpu: Boolean? = null
     private val currentRequest = AtomicInteger()
+    private val now = DateTimeFormatter.ofPattern("EEEE, yyyy-MM-dd'T'HH:mm", Locale.GERMAN)
 
     override fun sendMessage(message: String) {
         session.addMessage(ChatMessage(message, fromAi = false))
@@ -42,8 +53,7 @@ class LiteRtChatImpl(
                 val model = modelStore.selectedModel.value ?: error("Kein Modell heruntergeladen")
                 val conversation = conversation(model)
                 if (request != currentRequest.get()) return@launch
-                val reply = conversation.sendMessage(message).toString()
-                if (request == currentRequest.get()) session.addMessage(ChatMessage(reply, fromAi = true))
+                stream(conversation, "Jetzt: ${LocalDateTime.now().format(now)}\n$message", request)
             } catch (e: Exception) {
                 if (request == currentRequest.get()) session.setError(e.message ?: e.javaClass.simpleName)
             } finally {
@@ -63,6 +73,22 @@ class LiteRtChatImpl(
         session.setThinking(false)
     }
 
+    private suspend fun stream(conversation: Conversation, message: String, request: Int) {
+        var text = ""
+        conversation.sendMessageAsync(message).collect { chunk ->
+            Log.d(TAG, "chunk text=[$chunk] toolCalls=${chunk.toolCalls} channels=${chunk.channels}")
+            if (request != currentRequest.get()) return@collect
+            val delta = chunk.toString()
+            if (delta.isEmpty()) return@collect
+            if (text.isEmpty()) {
+                session.addMessage(ChatMessage(delta, fromAi = true))
+            } else {
+                session.updateLastMessage(ChatMessage(text + delta, fromAi = true))
+            }
+            text += delta
+        }
+    }
+
     private fun conversation(model: Model): Conversation {
         val useGpu = settingsStore.useGpu.value
         if (model != loadedModel || useGpu != loadedWithGpu) loadEngine(model, useGpu)
@@ -73,10 +99,16 @@ class LiteRtChatImpl(
         current?.takeIf { it.isAlive }?.close()
         cancelled = false
         val engine = checkNotNull(engine)
-        return engine.createConversation(ConversationConfig(thinkingConfig = ThinkingConfig(enableThinking = false)))
+        val config = ConversationConfig(
+            systemInstruction = Contents.of(SYSTEM_PROMPT),
+            tools = listOf(tool(ActionTools())),
+                        thinkingConfig = ThinkingConfig(enableThinking = false),
+        )
+        return engine.createConversation(config)
             .also { conversation = it }
     }
 
+    @OptIn(ExperimentalApi::class)
     private fun loadEngine(model: Model, useGpu: Boolean) {
         conversation?.takeIf { it.isAlive }?.close()
         engine?.close()
@@ -86,6 +118,7 @@ class LiteRtChatImpl(
         loadedWithGpu = null
 
         val backend = if (useGpu) Backend.GPU() else Backend.CPU()
+        ExperimentalFlags.enableSpeculativeDecoding = useGpu
         val newEngine = Engine(EngineConfig(modelPath = modelStore.pathOf(model), backend = backend))
         newEngine.initialize()
         engine = newEngine

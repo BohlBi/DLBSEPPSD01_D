@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">OnDeviceAI</string>
+
+    <string name="nav_chat">Chat</string>
+    <string name="nav_models">Modelle</string>
+    <string name="nav_settings">Einstellungen</string>
+
+    <string name="chat_input_placeholder">Nachricht</string>
+    <string name="chat_send">Senden</string>
+    <string name="chat_stop">Stoppen</string>
+
+    <string name="chat_model">Modell</string>
+
+    <string name="models_download">Herunterladen</string>
+    <string name="models_downloaded">Heruntergeladen</string>
+
+    <string name="settings_use_gpu">GPU verwenden</string>
+    <string name="settings_use_gpu_description">Schneller, auf manchen Geräten aber fehlerhafte Ausgaben. Wird beim nächsten Senden übernommen.</string>
+
+</resources>
